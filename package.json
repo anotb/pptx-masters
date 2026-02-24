@@ -1,0 +1,46 @@
+{
+  "name": "pptx-masters",
+  "version": "0.1.0",
+  "description": "Extract PptxGenJS defineSlideMaster() code from corporate .pptx/.potx templates",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "pptx-masters": "src/cli.js"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "files": [
+    "src/",
+    "skill/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "pptx",
+    "powerpoint",
+    "pptxgenjs",
+    "slide-master",
+    "template",
+    "ooxml"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anotb/pptx-masters.git"
+  },
+  "author": "anotb",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "fast-xml-parser": "^4.3.0",
+    "jszip": "^3.10.0",
+    "pptxgenjs": "^3.12.0"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
