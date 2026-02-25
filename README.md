@@ -16,6 +16,8 @@ There are a few ways LLMs typically generate PowerPoint files, and each has real
 
 pptx-masters automates that last part. Point it at your template, get ready-to-use JavaScript code that replicates your slide masters. Your LLM handles content, your template handles branding.
 
+For the full discussion of why LLM-generated slides are hard and how this approach works, see [LLM Slides Suck (But They Don't Have To)](https://unsol.dev/guides/llm-slides/).
+
 ## Quick Start
 
 ```bash
