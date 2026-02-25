@@ -1368,6 +1368,9 @@ export function generateAgentInstructions(masterData, themeColors, themeFonts, d
   lines.push('- **Missing fontFace**: PptxGenJS does not cascade fonts from masters. Every `addText()`, `addTable()`, `addChart()` call needs `fontFace: FONT` or text renders in Calibri.');
   lines.push('- **Table column overflow**: Column widths must sum to the container width. Mismatched widths cause silent overflow.');
   lines.push('- **Concatenated text blocks**: Build each logical section as a separate `addText()` call with its own positioning, not as one giant concatenated string.');
+  lines.push('- **Line shapes with negative dimensions**: `pres.shapes.LINE` with negative `w` or `h` (e.g., an upward-sloping line) can corrupt the PPTX file, causing PowerPoint to require repair on open. For complex visuals like trendlines, use SVG-as-image instead (see Workflow step 3).');
+  lines.push('- **Hex color format**: PptxGenJS only accepts 6-digit hex without `#` (e.g., `"1A3C6E"`). Alpha/opacity suffixes like `"FFFFFF70"` throw errors. Use solid colors only.');
+  lines.push('- **`lineSpacingMultiple` overrides**: Avoid overriding line spacing unless absolutely necessary. Custom values interact unpredictably with different font sizes and narrow containers, making overflow bugs hard to diagnose. Default spacing (1.0) is safest.');
   lines.push('');
 
   // --- Workflow ---
@@ -1396,13 +1399,33 @@ export function generateAgentInstructions(masterData, themeColors, themeFonts, d
   lines.push('</div>');
   lines.push('```');
   lines.push('');
+  lines.push('Use CSS px for font sizes and positioning in the HTML — these get converted to pt and inches in step 3. The HTML preview uses the browser\'s text engine for rapid iteration; PPTX rendering differs, so step 4 catches mismatches.');
+  lines.push('');
   lines.push('### 2. Visually inspect HTML');
   lines.push('');
   lines.push('Render the HTML preview and **look at it**. Check every slide for visual quality — does content fill the body area? Is text readable? Is the layout balanced? Fix in HTML until every slide looks right. Iterating here is much faster than re-generating PPTX.');
   lines.push('');
   lines.push('### 3. Translate to PptxGenJS');
   lines.push('');
-  lines.push('Convert the finalized HTML layouts to `addText()`, `addTable()`, `addChart()`, `addShape()` calls using the same coordinates.');
+  lines.push('Convert the finalized HTML layouts to `addText()`, `addTable()`, `addChart()`, `addShape()` calls. Key conversions:');
+  lines.push('');
+  lines.push('**Positions and sizes:**');
+  lines.push('- CSS `px` to inches: divide by 96 (`px / 96`)');
+  lines.push('- CSS `%` widths: calculate as fraction of parent width in inches');
+  lines.push('- Flexbox/grid layouts: replace with calculated absolute `x, y, w, h` positions');
+  lines.push('- CSS borders: replace with thin rectangles (`w: 0.01` for 1px lines)');
+  lines.push('- CSS backgrounds: add filled rectangles **before** content (z-order = insertion order)');
+  lines.push('');
+  lines.push('**Font sizes (px to pt):**');
+  lines.push('- Use **0.85x** as the base conversion: `pt = px × 0.85`, rounded to nearest 0.5pt');
+  lines.push('- Browsers and PowerPoint render text differently — 1:1 conversion overflows, 0.75x looks too small');
+  lines.push('- For narrow containers (sidebars, margin labels): reduce to 0.75x');
+  lines.push('- Leave 10-15% extra width in text boxes vs the HTML layout to account for different text wrapping');
+  lines.push('');
+  lines.push('**Charts:**');
+  lines.push('- Simple data charts: use `addChart()` with `CHART_COLORS`');
+  lines.push('- Custom SVG charts (gradients, trendlines, annotations): screenshot the SVG as a PNG at 2x resolution, then embed with `addImage({ data: "image/png;base64,..." })`');
+  lines.push('- Do NOT build complex charts from shape primitives — line shapes with negative dimensions corrupt the PPTX file');
   lines.push('');
   lines.push('### 4. Render PPTX and visually verify');
   lines.push('');

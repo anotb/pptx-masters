@@ -390,7 +390,9 @@ export function generateBrandSkill(masterData, options) {
   // --- Workflow ---
   lines.push('## Workflow');
   lines.push('');
-  lines.push(`**Design first, export last.** When iterating on slide design, create HTML previews in the browser (matching ${w}" \u00D7 ${h}" dimensions, brand colors/fonts). Only generate PPTX once the user approves the visual design.`);
+  lines.push(`**Design first, export last.** Create HTML previews (${w}" \u00D7 ${h}" dimensions, brand colors/fonts) for rapid iteration. Only generate PPTX once the visual design is approved.`);
+  lines.push('');
+  lines.push('**HTML to PPTX conversion:** positions `px / 96` → inches, font sizes `px × 0.85` → pt (rounded to 0.5pt). Leave 10-15% extra width in text boxes. For custom SVG charts, screenshot as PNG and embed with `addImage()` — do not build complex charts from shape primitives (line shapes with negative dimensions corrupt the file).');
   lines.push('');
   lines.push('```javascript');
   if (usesFallback) {

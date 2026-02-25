@@ -1,6 +1,6 @@
 {
   "name": "pptx-masters",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Extract PptxGenJS defineSlideMaster() code from corporate .pptx/.potx templates",
   "type": "module",
   "main": "src/index.js",
